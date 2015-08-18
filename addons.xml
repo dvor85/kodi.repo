@@ -40,7 +40,7 @@
 
 <addon id="script.torrent-tv.ru.pp"
        name="[COLOR FF00FF00][B]Torrent-TV XBMC [COLOR FFFFFF00]PLUS PLUS[/COLOR][/B][/COLOR]"
-       version="1.0.7"
+       version="1.0.8"
        provider-name="dvor85">
     <requires>
 		<import addon="xbmc.python" version="2.1.0" />
