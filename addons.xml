@@ -38,13 +38,38 @@
   </extension>
 </addon>
 
+<addon id="script.module.requests"
+       name="requests"
+       version="2.12.4"
+       provider-name="kennethreitz, beenje">
+  <requires>
+    <import addon="xbmc.python" version="2.14.0"/>
+  </requires>
+  <extension point="xbmc.python.module"
+             library="lib" />
+  <extension point="xbmc.addon.metadata">
+    <summary>Python HTTP for Humans</summary>
+    <description>Packed for KODI from https://github.com/kennethreitz/requests</description>
+    <platform>all</platform>
+    <language></language>
+    <license>Apache2</license>
+    <forum></forum>
+    <website>http://python-requests.org</website>
+    <source>https://github.com/beenje/script.module.requests</source>
+    <email>beenje AT gmail.com</email>
+  </extension>
+</addon>
+
 <addon id="script.torrent-tv.ru.pp"
        name="Torrent-TV [COLOR FFFFFF00]PLUS PLUS[/COLOR]"
-       version="2.0.1"
+       version="3.1.2"
        provider-name="dvor85">
     <requires>
-		<import addon="xbmc.python" version="2.1.0" />
-        <import addon="script.module.beautifulsoup" />
+		<import addon="xbmc.python" version="2.14.0" />
+		<import addon="script.module.requests" />
+        <import addon="script.module.beautifulsoup" optional="true" />
+        <import addon="script.module.pydevd" version="4.4.0" optional="true" />
+
     </requires>
     <extension point="xbmc.python.script" library="default.py">
         <provides>video</provides>
@@ -52,8 +77,12 @@
     <extension library="autostart.py" point="xbmc.service" />
     <extension point="xbmc.addon.metadata">
         <summary>Torrent-TV [COLOR FFFFFF00]PLUS PLUS[/COLOR]</summary>
-        <description>Доработанная версия официального плагина Торрент ТВ.</description>
+        <description>
+        	Просмотр torrent-tv каналов. Внешне похож на официальный плагин Torrent-tv XBMC.
+        </description>
         <platform>all</platform>
+        <forum>http://xbmc.ru/forum/showthread.php?p=76182</forum>
+        <website>http://xbmc.ru/forum/showthread.php?p=76182</website>
     </extension>
 </addon>
 </addons>
