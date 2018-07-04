@@ -20,49 +20,9 @@
 	</extension>
 </addon>
 
-<addon id="script.module.beautifulsoup"
-       name="BeautifulSoup"
-       version="3.2.1"
-       provider-name="Leonard Richardson (leonardr@segfault.org)">
-  <requires>
-    <import addon="xbmc.python"
-    		version="2.1.0"/>
-  </requires>
-  <extension point="xbmc.python.module"
-             library="lib" />
-  <extension point="xbmc.addon.metadata">
-    <summary>HTML/XML parser for quick-turnaround applications like screen-scraping</summary>
-    <description>Beautiful Soup parses arbitrarily invalid SGML and provides a variety of methods and Pythonic idioms for iterating and searching the parse tree.</description>
-    <license>BSD</license>
-    <platform>all</platform>
-  </extension>
-</addon>
-
-<addon id="script.module.requests"
-       name="requests"
-       version="2.12.4"
-       provider-name="kennethreitz, beenje">
-  <requires>
-    <import addon="xbmc.python" version="2.14.0"/>
-  </requires>
-  <extension point="xbmc.python.module"
-             library="lib" />
-  <extension point="xbmc.addon.metadata">
-    <summary>Python HTTP for Humans</summary>
-    <description>Packed for KODI from https://github.com/kennethreitz/requests</description>
-    <platform>all</platform>
-    <language></language>
-    <license>Apache2</license>
-    <forum></forum>
-    <website>http://python-requests.org</website>
-    <source>https://github.com/beenje/script.module.requests</source>
-    <email>beenje AT gmail.com</email>
-  </extension>
-</addon>
-
 <addon id="script.torrent-tv.ru.pp"
        name="Torrent-TV [COLOR FFFFFF00]PLUS PLUS[/COLOR]"
-       version="3.2.5"
+       version="3.2.6"
        provider-name="dvor85">
     <requires>
 		<import addon="xbmc.python" version="2.14.0" />
