@@ -22,12 +22,11 @@
 
 <addon id="script.torrent-tv.ru.pp"
        name="Torrent-TV [COLOR FFFFFF00]PLUS PLUS[/COLOR]"
-       version="4.0.1"
+       version="4.1.0"
        provider-name="dvor85">
     <requires>
 		<import addon="xbmc.python" version="2.19.0" />
 		<import addon="script.module.requests" />
-		<import addon="script.module.simplejson" />
     </requires>
     <extension point="xbmc.python.script" library="default.py">
         <provides>video</provides>
