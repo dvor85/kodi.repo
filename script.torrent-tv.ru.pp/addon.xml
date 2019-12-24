@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="script.torrent-tv.ru.pp"
        name="Torrent-TV [COLOR FFFFFF00]PLUS PLUS[/COLOR]"
-       version="4.1.1"
+       version="4.1.2"
        provider-name="dvor85">
     <requires>
 		<import addon="xbmc.python" version="2.26.0" />
