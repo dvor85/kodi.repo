@@ -99,11 +99,12 @@
 
 <addon id="script.torrent-tv.ru.pp"
        name="Torrent-TV [COLOR FFFFFF00]PLUS PLUS[/COLOR]"
-       version="4.1.5"
+       version="4.1.6"
        provider-name="dvor85">
     <requires>
 		<import addon="xbmc.python" version="2.26.0" />
 		<import addon="script.module.requests" />
+		<import addon="script.module.win_inet_pton" />
 		<import addon="script.module.pysocks" />
 		<import addon="script.module.six" />
     </requires>
