@@ -10,6 +10,7 @@
 # *
 # *  This Program is distributed in the hope that it will be useful,
 # *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+from __future__ import absolute_import, division, unicode_literals
 # *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # *  GNU General Public License for more details.
 # *
@@ -20,95 +21,137 @@
 # *
 # *  Based on code by j48antialias:
 # *  https://anarchintosh-projects.googlecode.com/files/addons_xml_generator.py
- 
+
 """ addons.xml generator """
- 
+
 import os
 import sys
- 
-# Compatibility with 3.0, 3.1 and 3.2 not supporting u"" literals
-if sys.version < '3':
-    import codecs
-    def u(x):
-        return codecs.unicode_escape_decode(x)[0]
-else:
-    def u(x):
-        return x
- 
+import zipfile
+import six
+
+PY2 = sys.version_info[0] == 2
+
+
+def uni(s, from_encoding='utf8'):
+    """
+    Декодирует строку из кодировки encoding
+    :path: строка для декодирования
+    :from_encoding: Кодировка из которой декодировать.
+    :return: unicode path
+    """
+
+    if isinstance(s, six.binary_type):
+        return s.decode(from_encoding, 'ignore')
+    return s
+
+
+def str2(s, to_encoding='utf8'):
+    """
+    PY2 - Кодирует :s: в :to_encoding:
+    """
+    if PY2 and isinstance(s, unicode):
+        return s.encode(to_encoding, 'ignore')
+    return str(s)
+
+
 class Generator:
     """
         Generates a new addons.xml file from each addons addon.xml file
         and a new addons.xml.md5 hash file. Must be run from the root of
         the checked-out repo. Only handles single depth folder structure.
     """
+
     def __init__(self):
         # generate files
         self._generate_addons_file()
-        self._generate_md5_file()
+        self._generate_md5_file("addons.xml")
         # notify user
         print("Finished updating addons xml and md5 files")
- 
+
+    def _get_actual_version(self, addon):
+        a_files = [a for a in os.listdir(addon) if a.endswith('.zip')]
+        version = ''
+        a_addon = None
+        for a_file in a_files:
+            self._generate_md5_file(os.path.join(addon, a_file))
+            c_version = a_file.split('-').pop().replace('.zip', '')
+            if c_version >= version:
+                version = c_version
+                a_addon = a_file
+        return a_addon, version
+
     def _generate_addons_file(self):
         # addon list
         addons = os.listdir(".")
         # final addons text
-        addons_xml = u("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n<addons>\n")
+        addons_xml = str2("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n<addons>\n")
         # loop thru and add each addons addon.xml file
         for addon in addons:
             try:
                 # skip any file or .svn folder or .git folder
-                if (not os.path.isdir(addon) or addon == ".svn" or addon == ".git"): continue
-                # create path
-                _path = os.path.join(addon, "addon.xml")
-                # split lines for stripping
-                xml_lines = open(_path, "r").read().splitlines()
+                if (not os.path.isdir(addon) or addon == ".svn" or addon == ".git"):
+                    continue
+
+                a_addon, version = self._get_actual_version(addon)
+                if not a_addon:
+                    continue
+                with zipfile.ZipFile(os.path.join(addon, a_addon), mode='r') as zip_addon:
+                    try:
+                        zip_addon.extract(addon + '/addon.xml')
+                        zip_addon.extract(addon + '/changelog.txt')
+                    except Exception as e:
+                        pass
+
                 # new addon
                 addon_xml = ""
+                with open(os.path.join(addon, 'addon.xml'), mode='r') as a_xml:
+                    xml_lines = uni(a_xml.read()).splitlines()
                 # loop thru cleaning each line
                 for line in xml_lines:
                     # skip encoding format line
-                    if (line.find("<?xml") >= 0): continue
+                    if (line.find("<?xml") >= 0):
+                        continue
                     # add line
-                    if sys.version < '3':
-                        addon_xml += unicode(line.rstrip() + "\n", "utf8")
-                    else:
-                        addon_xml += line.rstrip() + "\n"
+                    addon_xml += line.rstrip() + "\n"
                 # we succeeded so add to our final addons.xml text
+                print("Add {a}".format(a=addon))
+
                 addons_xml += addon_xml.rstrip() + "\n\n"
             except Exception as e:
                 # missing or poorly formatted addon.xml
-                print("Excluding %s for %s" % (_path, e))
+                print(e)
         # clean and add closing tag
-        addons_xml = addons_xml.strip() + u("\n</addons>\n")
+        addons_xml = addons_xml.strip() + "\n</addons>\n"
         # save file
-        self._save_file(addons_xml.encode("utf8"), file="addons.xml")
- 
-    def _generate_md5_file(self):
+        self._save_file(str2(addons_xml), "addons.xml")
+
+    def _generate_md5_file(self, _file):
         # create a new md5 hash
         try:
             import md5
-            m = md5.new(open("addons.xml", "r").read()).hexdigest()
+            m = md5.new(open(_file, "rb").read()).hexdigest()
         except ImportError:
             import hashlib
-            m = hashlib.md5(open("addons.xml", "r", encoding="utf8").read().encode("utf8")).hexdigest()
- 
+            m = hashlib.md5(open(_file, "rb").read()).hexdigest()
+
         # save file
         try:
-            self._save_file(m.encode("utf8"), file="addons.xml.md5")
+            self._save_file(str2(m), "{f}.md5".format(f=_file))
         except Exception as e:
             # oops
             print("An error occurred creating addons.xml.md5 file!\n%s" % e)
- 
-    def _save_file(self, data, file):
+
+    def _save_file(self, data, _file):
         try:
             # write data to the file (use b for Python 3)
-            open(file, "wb").write(data)
+            with open(_file, "wb") as fp:
+                fp.write(data)
+            pass
         except Exception as e:
             # oops
-            print("An error occurred saving %s file!\n%s" % (file, e))
- 
- 
+            print("An error occurred saving %s file!\n%s" % (_file, e))
+
+
 if (__name__ == "__main__"):
     # start
     Generator()
-    
