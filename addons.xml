@@ -104,7 +104,7 @@
     <requires>
 		<import addon="xbmc.python" version="2.26.0" />
 		<import addon="script.module.requests" />
-		<import addon="script.module.win_inet_pton" />
+		<import addon="script.module.win_inet_pton" optional="true" />
 		<import addon="script.module.pysocks" />
 		<import addon="script.module.six" />
     </requires>

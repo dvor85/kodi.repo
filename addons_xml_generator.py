@@ -10,7 +10,7 @@
 # *
 # *  This Program is distributed in the hope that it will be useful,
 # *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-from __future__ import absolute_import, division, unicode_literals
+
 # *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # *  GNU General Public License for more details.
 # *
@@ -22,12 +22,15 @@ from __future__ import absolute_import, division, unicode_literals
 # *  Based on code by j48antialias:
 # *  https://anarchintosh-projects.googlecode.com/files/addons_xml_generator.py
 
+from __future__ import absolute_import, division, unicode_literals
+
 """ addons.xml generator """
 
 import os
 import sys
 import zipfile
 import six
+import xml.etree.ElementTree as XML
 
 PY2 = sys.version_info[0] == 2
 
@@ -73,11 +76,25 @@ class Generator:
         version = ''
         a_addon = None
         for a_file in a_files:
-            self._generate_md5_file(os.path.join(addon, a_file))
-            c_version = a_file.split('-').pop().replace('.zip', '')
-            if c_version >= version:
-                version = c_version
-                a_addon = a_file
+            try:
+                c_file = os.path.join(addon, a_file)
+                with zipfile.ZipFile(c_file, mode='r') as zip_addon:
+                    with zip_addon.open(addon + '/addon.xml') as addon_xml:
+                        a_root = XML.parse(addon_xml).getroot()
+                        c_version = a_root.get('version')
+                        c_addon = os.path.join(addon, "{id}-{ver}.zip".format(id=a_root.get('id'), ver=c_version))
+
+                if os.path.abspath(c_addon) != os.path.abspath(c_file):
+                    if os.path.exists(c_addon):
+                        os.unlink(c_addon)
+                    os.rename(c_file, c_addon)
+
+                self._generate_md5_file(c_addon)
+                if c_version >= version:
+                    version = c_version
+                    a_addon = c_addon
+            except Exception as e:
+                print(e)
         return a_addon, version
 
     def _generate_addons_file(self):
@@ -95,7 +112,7 @@ class Generator:
                 a_addon, version = self._get_actual_version(addon)
                 if not a_addon:
                     continue
-                with zipfile.ZipFile(os.path.join(addon, a_addon), mode='r') as zip_addon:
+                with zipfile.ZipFile(a_addon, mode='r') as zip_addon:
                     try:
                         zip_addon.extract(addon + '/addon.xml')
                         zip_addon.extract(addon + '/changelog.txt')
