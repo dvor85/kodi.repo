@@ -116,8 +116,8 @@ class Generator:
                     continue
                 with zipfile.ZipFile(a_addon, mode='r') as zip_addon:
                     try:
-                        zip_addon.extract(addon + '/addon.xml')
-                        zip_addon.extract(addon + '/changelog.txt')
+                        zip_addon.extract(addon + '/addon.xml', path=self.root_dir)
+                        zip_addon.extract(addon + '/changelog.txt', path=self.root_dir)
                     except Exception as e:
                         pass
 

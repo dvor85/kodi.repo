@@ -1,70 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addons>
-<addon id="script.module.win_inet_pton" name="win-inet-pton" version="1.1.0" provider-name="hickeroar">
-  <requires>
-    <import addon="xbmc.python" version="2.25.0"/>
-  </requires>
-  <extension point="xbmc.python.module" library="lib"/>
-  <extension point="xbmc.addon.metadata">
-    <summary lang="en_GB">Native python inet_pton implementation on Windows (with ctypes)</summary>
-    <description lang="en_GB">Native inet_pton and inet_ntop implementation for Python on Windows (with ctypes).</description>
-    <platform>windows</platform>
-    <language></language>
-    <license>Public Domain</license>
-    <forum></forum>
-    <website>https://github.com/hickeroar/win_inet_pton</website>
-    <source>https://github.com/dagwieers/script.module.win_inet_pton</source>
-    <email>dag@wieers.com</email>
-    <assets>
-      <icon>icon.png</icon>
-    </assets>
-  </extension>
-</addon>
-
-<addon id="script.module.pysocks"
-       name="PySocks"
-       version="1.6.8"
-       provider-name="Anorov (anorov.vorona@gmail.com)">
-  <requires>
-    <import addon="xbmc.python"
-             version="2.25.0"/>
-  </requires>
-  <extension point="xbmc.python.module"
-             library="lib" />
-  <extension point="xbmc.addon.metadata">
-    <summary lang="en_GB">A SOCKS proxy client and wrapper for Python</summary>
-    <description lang="en_GB">PySocks lets you send traffic through SOCKS and HTTP proxy servers. It is a modern fork of SocksiPy with bug fixes and extra features.</description>
-    <platform>all</platform>
-    <license>BSD</license>
-    <news>
-## [1.6.8] - 2017-12-21
-- Remove support for EOL Python 3.3
-
-## [1.6.7] - 2017-03-22
-- Make SocksiPy legacy functions kwarg-compatible. See issue [#71](https://github.com/Anorov/PySocks/pull/71).
-- Use setuptools in setup.py to support wheel. See issue [#73](https://github.com/Anorov/PySocks/pull/73).
-- Test and logging enhancements
-
-## [1.6.6] - 2017-01-29
-- Full test suite finally added
-- Travis CI enabled for project
-    </news>
-    <source>https://github.com/Anorov/PySocks</source>
-    <website>https://github.com/Anorov/PySocks</website>
-    <assets>
-      <icon>icon.png</icon>
-    </assets>
-  </extension>
-</addon>
-
 <addon id="repository.dvor85"
        name="dvor85 XBMC Add-ons"
-	   version="1.0.1"
+	   version="1.0.2"
 	   provider-name="dvor85">
 	<extension point="xbmc.addon.repository" name="dvor85 XBMC Add-ons">
-		<info compressed="false">https://github.com/dvor85/kodi.repo/raw/master/addons.xml</info>
-		<checksum>https://github.com/dvor85/kodi.repo/raw/master/addons.xml.md5</checksum>
-		<datadir zip="true">https://github.com/dvor85/kodi.repo/raw/master/</datadir>
+		<dir minversion="18.0.0">
+			<info compressed="false">https://github.com/dvor85/kodi.repo/raw/master/addons.xml</info>
+			<checksum>https://github.com/dvor85/kodi.repo/raw/master/addons.xml.md5</checksum>
+			<datadir zip="true">https://github.com/dvor85/kodi.repo/raw/master/</datadir>
+		</dir>
+		<dir minversion="19.0.0">
+			<info compressed="false">https://github.com/dvor85/kodi.repo/raw/matrix/addons.xml</info>
+			<checksum>https://github.com/dvor85/kodi.repo/raw/matrix/addons.xml.md5</checksum>
+			<datadir zip="true">https://github.com/dvor85/kodi.repo/raw/matrix/</datadir>
+		</dir>
 	</extension>
 	<extension point="xbmc.addon.metadata">
 		<summary>dvor85 Repository</summary>
@@ -79,47 +29,28 @@
 
 <addon id="script.torrent-tv.ru.pp"
        name="Torrent-TV [COLOR FFFFFF00]PLUS PLUS[/COLOR]"
-       version="4.1.7"
+       version="4.1.7+matrix1"
        provider-name="dvor85">
     <requires>
-		<import addon="xbmc.python" version="2.26.0" />
-		<import addon="script.module.requests" />
-		<import addon="script.module.win_inet_pton" optional="true" />
-		<import addon="script.module.pysocks" />
-		<import addon="script.module.six" />
+		<import addon="xbmc.python" version="3.0.0" />
+		<import addon="script.module.requests" version="2.12.4" />
+		<import addon="script.module.win_inet_pton" version="1.1.0" optional="true" />
+		<import addon="script.module.pysocks" version="1.6.8" />
+		<import addon="script.module.six" version="1.12.0" />
     </requires>
     <extension point="xbmc.python.script" library="default.py">
         <provides>video</provides>
     </extension>
-    <extension library="autostart.py" point="xbmc.service" />
+    <extension point="xbmc.service" library="autostart.py" />
     <extension point="xbmc.addon.metadata">
         <summary>Torrent-TV [COLOR FFFFFF00]PLUS PLUS[/COLOR]</summary>
-        <description>
-        	Просмотр каналов через acestreamplayer.
-        </description>
+        <description>Просмотр каналов через acestreamplayer.</description>
         <platform>all</platform>
         <forum>http://xbmc.ru/forum/showthread.php?p=76182</forum>
         <website>http://xbmc.ru/forum/showthread.php?p=76182</website>
+        <assets>
+			<icon>icon.png</icon>
+		</assets>
     </extension>
-</addon>
-
-<addon id="script.module.six"
-       name="six"
-       version="1.12.0"
-       provider-name="gutworth">
-  <requires>
-    <import addon="xbmc.python"
-    		version="2.1.0"/>
-  </requires>
-  <extension point="xbmc.python.module"
-             library="lib" />
-  <extension point="xbmc.addon.metadata">
-    <summary>Python 2 and 3 compatibility utilities.</summary>
-    <description>Six is a Python 2 and 3 compatibility library. It provides utility functions for smoothing over the differences between the Python versions with the goal of writing Python code that is compatible on both Python versions. See the documentation for more information on what is provided.</description>
-    <platform>all</platform>
-    <license>MIT</license>
-    <source>https://pypi.python.org/pypi/six</source>
-    <website>https://pypi.python.org/pypi/six</website>
-  </extension>
 </addon>
 </addons>
