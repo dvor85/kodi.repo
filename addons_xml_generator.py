@@ -66,23 +66,24 @@ class Generator:
 
     def __init__(self):
         # generate files
+        self.root_dir = os.path.dirname(__file__)
         self._generate_addons_file()
-        self._generate_md5_file("addons.xml")
+        self._generate_md5_file(os.path.join(self.root_dir, "addons.xml"))
         # notify user
         print("Finished updating addons xml and md5 files")
 
     def _get_actual_version(self, addon):
-        a_files = [a for a in os.listdir(addon) if a.endswith('.zip')]
+        a_files = [a for a in os.listdir(os.path.join(self.root_dir, addon)) if a.endswith('.zip')]
         version = ''
         a_addon = None
         for a_file in a_files:
             try:
-                c_file = os.path.join(addon, a_file)
+                c_file = os.path.join(self.root_dir, addon, a_file)
                 with zipfile.ZipFile(c_file, mode='r') as zip_addon:
                     with zip_addon.open(addon + '/addon.xml') as addon_xml:
                         a_root = XML.parse(addon_xml).getroot()
                         c_version = a_root.get('version')
-                        c_addon = os.path.join(addon, "{id}-{ver}.zip".format(id=a_root.get('id'), ver=c_version))
+                        c_addon = os.path.join(self.root_dir, addon, "{id}-{ver}.zip".format(id=a_root.get('id'), ver=c_version))
 
                 if os.path.abspath(c_addon) != os.path.abspath(c_file):
                     if os.path.exists(c_addon):
@@ -99,14 +100,15 @@ class Generator:
 
     def _generate_addons_file(self):
         # addon list
-        addons = os.listdir(".")
+
+        addons = os.listdir(self.root_dir)
         # final addons text
         addons_xml = str2("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n<addons>\n")
         # loop thru and add each addons addon.xml file
         for addon in addons:
             try:
                 # skip any file or .svn folder or .git folder
-                if (not os.path.isdir(addon) or addon == ".svn" or addon == ".git"):
+                if (not os.path.isdir(os.path.join(self.root_dir, addon)) or addon == ".svn" or addon == ".git"):
                     continue
 
                 a_addon, version = self._get_actual_version(addon)
@@ -114,14 +116,14 @@ class Generator:
                     continue
                 with zipfile.ZipFile(a_addon, mode='r') as zip_addon:
                     try:
-                        zip_addon.extract(addon + '/addon.xml')
-                        zip_addon.extract(addon + '/changelog.txt')
+                        zip_addon.extract(addon + '/addon.xml', path=self.root_dir)
+                        zip_addon.extract(addon + '/changelog.txt', path=self.root_dir)
                     except Exception as e:
                         pass
 
                 # new addon
                 addon_xml = ""
-                with open(os.path.join(addon, 'addon.xml'), mode='r') as a_xml:
+                with open(os.path.join(self.root_dir, addon, 'addon.xml'), mode='r') as a_xml:
                     xml_lines = uni(a_xml.read()).splitlines()
                 # loop thru cleaning each line
                 for line in xml_lines:
@@ -140,7 +142,7 @@ class Generator:
         # clean and add closing tag
         addons_xml = addons_xml.strip() + "\n</addons>\n"
         # save file
-        self._save_file(str2(addons_xml), "addons.xml")
+        self._save_file(addons_xml, os.path.join(self.root_dir, "addons.xml"))
 
     def _generate_md5_file(self, _file):
         # create a new md5 hash
@@ -161,7 +163,7 @@ class Generator:
     def _save_file(self, data, _file):
         try:
             # write data to the file (use b for Python 3)
-            with open(_file, "wb") as fp:
+            with open(_file, "w") as fp:
                 fp.write(data)
             pass
         except Exception as e:
